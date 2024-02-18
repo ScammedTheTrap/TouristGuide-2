@@ -4,18 +4,29 @@ import com.example.touristguide.Model.TouristAttraction;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Repository
 public class TouristRepository {
     private List<TouristAttraction> touristAttractions;
 
-    public TouristRepository(){
+   /* public TouristRepository(){
         this.touristAttractions = new ArrayList<>();
         touristAttractions.add(new TouristAttraction("The Little Mermaid", "The little mermaid attraction."));
         touristAttractions.add(new TouristAttraction("Møns Klint", "A beautiful view from the Danish coast."));
         touristAttractions.add(new TouristAttraction("Tivoli", "A historic attraction for kids and adults."));
+    }*/
+
+    public TouristRepository(){
+        this.touristAttractions = Arrays.asList(
+                new TouristAttraction("SMK", "Statens Museum for Kunst", "København", Arrays.asList("Kunst", "Museum")),
+                new TouristAttraction("Odense Zoo", "Europas bedste zoo", "Odense", Arrays.asList("Børnevenlig")),
+                new TouristAttraction("Dyrehaven", "Naturpark med skovområder", "Kongens Lyngby", Arrays.asList("Natur", "Gratis")),
+                new TouristAttraction("Tivoli", "Forlystelsespark midt i København centrum", "København", Arrays.asList("Børnevenlig"))
+        ); //Arrays.asList = foruddefineret værdier. Kan altid tilføje flere
     }
+
 
     //CRUD metoder
     public List<TouristAttraction> findAllAttractions(){

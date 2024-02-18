@@ -12,14 +12,21 @@
     <tr>
         <th>Navn</th>
         <th>Beskrivelse</th>
+        <th>Handling</th> <!-- Tilføjer en ny kolonne for handlinger -->
     </tr>
     </thead>
     <tbody>
     <tr th:each="attraction : ${attractions}">
         <td th:text="${attraction.name}"></td>
         <td th:text="${attraction.description}"></td>
+        <td>
+            <!-- Tilføjer en Tags knap, der linker til /attractions/{name}/tags -->
+            <a th:href="@{|/attractions/${attraction.name}/tags|}" class="button">Tags</a>
+        </td>
     </tr>
     </tbody>
 </table>
+<!-- Tilføjer en Tilføj attraktion knap i bunden af siden -->
+<button onclick="location.href='/attractions/add'" type="button">Tilføj attraktion</button>
 </body>
 </html>

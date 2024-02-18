@@ -74,4 +74,22 @@ public class TouristController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
+
+//Endpoint til vores tags
+    public String getAttractionTags(@PathVariable String name, Model model) {
+        Optional<TouristAttraction> attraction = touristService.findAttractionByName(name);
+        if (attraction.isPresent()) {
+            model.addAttribute("attraction", attraction.get());
+            // Antager at du har en liste af tags i din TouristAttraction model
+            model.addAttribute("tags", attraction.get().getTags());
+            return "tags"; //(tags.html)
+        } else {
+            //hvis attraktion ikke findes
+            return "redirect:/attractions";
+        }
+    }
+
+
+
+
 }
