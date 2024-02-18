@@ -8,7 +8,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.ModelAndView;
 
 import java.util.List;
 import java.util.Optional;
@@ -23,20 +22,6 @@ public class TouristController {
         this.touristService = touristService;
     }
 
-    @GetMapping("")
-    public ModelAndView allAttractions() {
-        List<TouristAttraction> attractions = touristService.getAllAttractions();
-        ModelAndView modelAndView = new ModelAndView("attractionList");
-        modelAndView.addObject("attractions", attractions);
-        return modelAndView;
-    }
-    @GetMapping("/attractions")
-    public String allAttractions(Model model) {
-        List<TouristAttraction> attractions = touristService.getAllAttractions();
-        model.addAttribute("attractions", attractions);
-        return "attractionList"; // Navnet på din HTML-skabelon uden .html
-    }
-
 
 
     @GetMapping("/test")
@@ -44,6 +29,15 @@ public class TouristController {
         List<TouristAttraction> attractions = touristService.getAllAttractions();
         return new ResponseEntity<>(attractions, HttpStatus.OK);
     }
+
+    @GetMapping("")
+    public String allAttractions(Model model) {
+        List<TouristAttraction> attractions = touristService.getAllAttractions();
+        model.addAttribute("attractions", attractions);
+        return "attractions";
+    }
+
+
 
     @GetMapping("/{name}")
     public ResponseEntity<TouristAttraction> getAttractionByName(@PathVariable String name) {
@@ -54,6 +48,7 @@ public class TouristController {
             return ResponseEntity.notFound().build();
         }
     }
+
 
     @PostMapping("/add")
     public ResponseEntity<TouristAttraction> addAttraction(@RequestBody TouristAttraction touristAttraction) {
