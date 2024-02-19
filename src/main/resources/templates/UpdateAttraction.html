@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Opdater Turistattraktion</title>
+    <link th:href="@{/main.css}" rel="stylesheet">
+</head>
+<body>
+<h1>Ændring af information</h1>
+<form th:action="@{/attractions/update}" th:object="${attraction}" method="post">
+    <div>
+        <strong>Navn:</strong> <span th:text="${attraction.name}">Navn</span>
+    </div>
+    <div>
+        <label for="description">Beskrivelse:</label>
+        <input type="text" id="description" th:field="*{description}" />
+    </div>
+    <div>
+        <label for="city">By:</label>
+        <select id="city" th:field="*{city}">
+            <option value="København">København</option>A
+            <option value="Odense">Odense</option>
+            <!-- Flere byer kan tilføjes her -->
+        </select>
+    </div>
+    <div>
+        <div><strong>Tags:</strong></div>
+        <div><label><input type="checkbox" th:field="*{tags}" value="Børnevenlig" /> Børnevenlig</label></div>
+        <div><label><input type="checkbox" th:field="*{tags}" value="Gratis" /> Gratis</label></div>
+        <div><label><input type="checkbox" th:field="*{tags}" value="Kunst" /> Kunst</label></div>
+        <div><label><input type="checkbox" th:field="*{tags}" value="Museum" /> Museum</label></div>
+        <div><label><input type="checkbox" th:field="*{tags}" value="Natur" /> Natur</label></div>
+    </div>
+    <div>
+        <button type="submit">Ok</button>
+        <button type="button" th:onclick="'window.location.href=\'' + @{/attractions} + '\''">Fortryd</button>
+    </div>
+</form>
+</body>
+</html>

@@ -8,7 +8,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -37,7 +39,25 @@ public class TouristController {
         return "attractions";
     }
 
+//Opgave 7
+    @GetMapping("/add")
+    public String showAddForm(Model model) {
+        model.addAttribute("touristAttraction", new TouristAttraction());
+        return "AddAttractions"; // Navnet på din Thymeleaf-skabelon for tilføjelse af en ny attraktion
+    }
 
+    //opgave 7
+    @PostMapping("/add")
+    public String addAttraction(@ModelAttribute TouristAttraction touristAttraction, Model model) {
+        TouristAttraction newAttraction = touristService.createAttraction(touristAttraction);
+        model.addAttribute("touristAttraction", newAttraction);
+        return "redirect:/attractions";
+    }
+    /* @PostMapping("/add")
+      public ResponseEntity<TouristAttraction> addAttraction(@RequestBody TouristAttraction touristAttraction) {
+          TouristAttraction newAttraction = touristService.createAttraction(touristAttraction);
+          return new ResponseEntity<>(newAttraction, HttpStatus.CREATED);
+      } */
 
     @GetMapping("/{name}")
     public ResponseEntity<TouristAttraction> getAttractionByName(@PathVariable String name) {
@@ -50,12 +70,6 @@ public class TouristController {
     }
 
 
-    @PostMapping("/add")
-    public ResponseEntity<TouristAttraction> addAttraction(@RequestBody TouristAttraction touristAttraction) {
-        TouristAttraction newAttraction = touristService.createAttraction(touristAttraction);
-        return new ResponseEntity<>(newAttraction, HttpStatus.CREATED);
-    }
-
     @PutMapping("/update/{name}")
     public ResponseEntity<?> updateAttraction(@PathVariable String name, @RequestBody TouristAttraction touristAttraction) {
         TouristAttraction updatedAttraction = touristService.updateAttraction(name, touristAttraction);
@@ -66,13 +80,24 @@ public class TouristController {
         }
     }
 
-    @DeleteMapping("/delete/{name}")
+    /*@DeleteMapping("/delete/{name}")
     public ResponseEntity<?> deleteAttraction(@PathVariable String name) {
         if (touristService.deleteAttraction(name)) {
             return new ResponseEntity<>(HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
+    } */
+
+    @PostMapping("/delete/{name}")
+    public String deleteAttraction(@PathVariable String name, RedirectAttributes redirectAttributes) {
+        boolean isDeleted = touristService.deleteAttraction(name);
+        if (isDeleted) {
+            redirectAttributes.addFlashAttribute("successMessage", "Attraktionen blev slettet.");
+        } else {
+            redirectAttributes.addFlashAttribute("errorMessage", "Attraktionen kunne ikke findes.");
+        }
+        return "redirect:/UpdateAttraction";
     }
 
 //Endpoint til vores tags
@@ -84,7 +109,7 @@ public class TouristController {
             model.addAttribute("tags", attraction.get().getTags());
             return "tags"; //(tags.html)
         } else {
-            //hvis attraktion ikke findes
+
             return "redirect:/attractions";
         }
     }

@@ -18,12 +18,8 @@ public class TouristAttraction {
     }
 
 
-    public String getCity() {
-        return city;
-    }
-
-    public void setCity(String city) {
-        this.city = city;
+    public TouristAttraction() {
+        this.tags = new ArrayList<>();
     }
 
 
@@ -42,6 +38,14 @@ public class TouristAttraction {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
     }
 
     // Getter og setter for description

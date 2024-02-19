@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Tilføj Turistattraktion</title>
+    <link th:href="@{/main.css}" rel="stylesheet">
+</head>
+<body>
+<h1>Tilføj ny attraktion:</h1>
+<form th:action="@{/attractions/add}" th:object="${touristAttraction}" method="post">
+    <p>Navn: <input type="text" th:field="*{name}" /></p>
+    <p>Beskrivelse: <input type="text" th:field="*{description}" /></p>
+    <p><input type="submit" value="Submit" /></p>
+</form>
+</body>
+</html>
