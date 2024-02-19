@@ -7,7 +7,7 @@ public class TouristAttraction {
 
     private String name;
     private String description;
-    private String city;
+    private String city; //måske List<String>
     private List<String> tags;
 
     public TouristAttraction(String name, String description, String city, List<String> tags) {

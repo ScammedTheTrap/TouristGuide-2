@@ -18,8 +18,9 @@
     <div>
         <label for="city">By:</label>
         <select id="city" th:field="*{city}">
-            <option value="København">København</option>A
+            <option value="København">København</option>
             <option value="Odense">Odense</option>
+            <option value="København">Aarhus</option>
             <!-- Flere byer kan tilføjes her -->
         </select>
     </div>
@@ -34,6 +35,7 @@
     <div>
         <button type="submit">Ok</button>
         <button type="button" th:onclick="'window.location.href=\'' + @{/attractions} + '\''">Fortryd</button>
+
     </div>
 </form>
 </body>

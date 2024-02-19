@@ -19,12 +19,13 @@ public class TouristRepository {
     }*/
 
     public TouristRepository(){
-        this.touristAttractions = Arrays.asList(
+        this.touristAttractions = new ArrayList<>(Arrays.asList(
+
                 new TouristAttraction("SMK", "Statens Museum for Kunst", "København", Arrays.asList("Kunst", "Museum")),
                 new TouristAttraction("Odense Zoo", "Europas bedste zoo", "Odense", Arrays.asList("Børnevenlig")),
                 new TouristAttraction("Dyrehaven", "Naturpark med skovområder", "Kongens Lyngby", Arrays.asList("Natur", "Gratis")),
                 new TouristAttraction("Tivoli", "Forlystelsespark midt i København centrum", "København", Arrays.asList("Børnevenlig"))
-        ); //Arrays.asList = foruddefineret værdier. Kan altid tilføje flere
+        )); //Arrays.asList = foruddefineret værdier. Rettet så man kan tilføje flere.
     }
 
 

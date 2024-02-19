@@ -12,6 +12,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Controller
@@ -25,6 +26,15 @@ public class TouristController {
     }
 
 
+    @PostMapping("/save")
+    public ResponseEntity<TouristAttraction> saveAttraction(@RequestBody TouristAttraction touristAttraction) {
+        TouristAttraction savedAttraction = touristService.saveAttraction(touristAttraction);
+        if (savedAttraction != null) {
+            return new ResponseEntity<>(savedAttraction, HttpStatus.CREATED);
+        } else {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 
     @GetMapping("/test")
     public ResponseEntity<List<TouristAttraction>> getAllAttractions() {
@@ -97,8 +107,37 @@ public class TouristController {
         } else {
             redirectAttributes.addFlashAttribute("errorMessage", "Attraktionen kunne ikke findes.");
         }
-        return "redirect:/UpdateAttraction";
+        return "redirect:/attractions";
     }
+
+
+
+//____________________________________
+    @PostMapping("/update")
+    public String updateAttraction(@ModelAttribute TouristAttraction touristAttraction, RedirectAttributes redirectAttributes) {
+        try {
+            TouristAttraction updatedAttraction = touristService.updateAttraction(touristAttraction.getName(), touristAttraction);
+            redirectAttributes.addFlashAttribute("successMessage", "Attraktionen '" + updatedAttraction.getName() + "' blev opdateret.");
+        } catch (NoSuchElementException e) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Attraktionen kunne ikke findes og opdateres.");
+        }
+        return "redirect:/attractions";
+    }
+
+    @GetMapping("/edit/{name}")
+    public String showUpdateForm(@PathVariable String name, Model model) {
+        Optional<TouristAttraction> attraction = touristService.findAttractionByName(name);
+        if (attraction.isPresent()) {
+            model.addAttribute("attraction", attraction.get());
+            return "UpdateAttraction"; // Navnet på din Thymeleaf-skabelon for opdatering
+        } else {
+            return "redirect:/attractions";
+        }
+    }
+//__________________________
+
+
+
 
 //Endpoint til vores tags
     public String getAttractionTags(@PathVariable String name, Model model) {

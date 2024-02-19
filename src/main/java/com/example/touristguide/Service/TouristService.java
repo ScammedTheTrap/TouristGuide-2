@@ -33,6 +33,13 @@ public class TouristService {
     }
 
 
+    //gemmer attraktioner
+    public TouristAttraction saveAttraction(TouristAttraction touristAttraction) {
+        return touristRepository.save(touristAttraction);
+    }
+
+
+
     public TouristAttraction updateAttraction(String name, TouristAttraction updatedAttraction) {
         TouristAttraction updated = touristRepository.update(name, updatedAttraction);
         if (updated == null) {
