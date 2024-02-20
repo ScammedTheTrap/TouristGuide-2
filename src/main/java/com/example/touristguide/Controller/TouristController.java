@@ -42,7 +42,7 @@ public class TouristController {
         return new ResponseEntity<>(attractions, HttpStatus.OK);
     }
 
-    @GetMapping("")
+    @GetMapping("") //_____
     public String allAttractions(Model model) {
         List<TouristAttraction> attractions = touristService.getAllAttractions();
         model.addAttribute("attractions", attractions);
@@ -78,14 +78,7 @@ public class TouristController {
             return ResponseEntity.notFound().build();
         }
     }
- /*@DeleteMapping("/delete/{name}")
-    public ResponseEntity<?> deleteAttraction(@PathVariable String name) {
-        if (touristService.deleteAttraction(name)) {
-            return new ResponseEntity<>(HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-    } */
+
  @PostMapping("/delete/{name}")
  public String deleteAttraction(@PathVariable String name, RedirectAttributes redirectAttributes) {
      boolean isDeleted = touristService.deleteAttraction(name);
@@ -97,7 +90,7 @@ public class TouristController {
      return "redirect:/attractions";
  }
 
-    @PutMapping("/update/{name}")
+   /* @GetMapping("/{name}/edit") //____
     public ResponseEntity<?> updateAttraction(@PathVariable String name, @RequestBody TouristAttraction touristAttraction) {
         TouristAttraction updatedAttraction = touristService.updateAttraction(name, touristAttraction);
         if (updatedAttraction != null) {
@@ -105,11 +98,19 @@ public class TouristController {
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
+    } */
+    @PostMapping("/edit")
+    public String updateAttraction(@ModelAttribute TouristAttraction touristAttraction) {
+
+        try {
+            TouristAttraction updatedAttraction = touristService.updateAttraction(touristAttraction.getName(), touristAttraction);
+            //redirectAttributes.addFlashAttribute("successMessage", "Attraktionen '" + updatedAttraction.getName() + "' blev opdateret.");
+            return "redirect:/attractions";
+        } catch (NoSuchElementException e) {
+            //redirectAttributes.addFlashAttribute("errorMessage", "Attraktionen kunne ikke findes og opdateres.");
+            return "redirect:/attractions";
+        }
     }
-
-
-
-
 
 
 //____________________________________
@@ -124,7 +125,7 @@ public class TouristController {
         return "redirect:/attractions";
     }
 
-    @GetMapping("/edit/{name}")
+    @GetMapping("/{name}/edit")
     public String showUpdateForm(@PathVariable String name, Model model) {
         Optional<TouristAttraction> attraction = touristService.findAttractionByName(name);
         if (attraction.isPresent()) {
@@ -134,6 +135,7 @@ public class TouristController {
             return "redirect:/attractions";
         }
     }
+
 //__________________________
 
 

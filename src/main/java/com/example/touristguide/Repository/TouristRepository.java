@@ -47,13 +47,16 @@ public class TouristRepository {
     public TouristAttraction update(String name, TouristAttraction updatedAttraction) {
         for (int i = 0; i < touristAttractions.size(); i++) {
             TouristAttraction existingAttraction = touristAttractions.get(i);
+            System.out.println(existingAttraction.getName());
+            System.out.println((existingAttraction.getDescription()));
+
             if (existingAttraction.getName().equalsIgnoreCase(name)) {
                 touristAttractions.set(i, updatedAttraction);
                 return updatedAttraction;
             }
         }
+        System.out.println(updatedAttraction.getName());
         return null;
         // return throw new NoSuchElementException("TouristAttraction with name " + name + " not found");
     }
-
 }

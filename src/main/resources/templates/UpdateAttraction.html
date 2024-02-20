@@ -7,7 +7,8 @@
 </head>
 <body>
 <h1>Ændring af information</h1>
-<form th:action="@{/attractions/update}" th:object="${attraction}" method="post">
+<form th:action="@{/attractions/edit}" th:object="${attraction}" method="post">
+    <input type="hidden" th:field="*{name}" >
     <div>
         <strong>Navn:</strong> <span th:text="${attraction.name}">Navn</span>
     </div>
@@ -35,7 +36,7 @@
     <div>
         <button type="submit">Ok</button>
       <!--  <button type="button" th:onclick="'window.location.href=\'' + @{/attractions} + '\''">Fortryd</button> -->
-        <button type="button" th:attr="onclick=|window.location.href='${@{/attractions}}'|">Fortryd</button>
+        <!--<button type="button" th:attr="onclick=|window.location.href='${@{/attractions}}'|">Fortryd</button>-->
 
     </div>
 </form>
