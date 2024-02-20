@@ -10,7 +10,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.util.ArrayList;
+
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -78,7 +78,24 @@ public class TouristController {
             return ResponseEntity.notFound().build();
         }
     }
-
+ /*@DeleteMapping("/delete/{name}")
+    public ResponseEntity<?> deleteAttraction(@PathVariable String name) {
+        if (touristService.deleteAttraction(name)) {
+            return new ResponseEntity<>(HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    } */
+ @PostMapping("/delete/{name}")
+ public String deleteAttraction(@PathVariable String name, RedirectAttributes redirectAttributes) {
+     boolean isDeleted = touristService.deleteAttraction(name);
+     if (isDeleted) {
+         redirectAttributes.addFlashAttribute("successMessage", "Attraktionen blev slettet.");
+     } else {
+         redirectAttributes.addFlashAttribute("errorMessage", "Attraktionen kunne ikke findes.");
+     }
+     return "redirect:/attractions";
+ }
 
     @PutMapping("/update/{name}")
     public ResponseEntity<?> updateAttraction(@PathVariable String name, @RequestBody TouristAttraction touristAttraction) {
@@ -90,25 +107,8 @@ public class TouristController {
         }
     }
 
-    /*@DeleteMapping("/delete/{name}")
-    public ResponseEntity<?> deleteAttraction(@PathVariable String name) {
-        if (touristService.deleteAttraction(name)) {
-            return new ResponseEntity<>(HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-    } */
 
-    @PostMapping("/delete/{name}")
-    public String deleteAttraction(@PathVariable String name, RedirectAttributes redirectAttributes) {
-        boolean isDeleted = touristService.deleteAttraction(name);
-        if (isDeleted) {
-            redirectAttributes.addFlashAttribute("successMessage", "Attraktionen blev slettet.");
-        } else {
-            redirectAttributes.addFlashAttribute("errorMessage", "Attraktionen kunne ikke findes.");
-        }
-        return "redirect:/attractions";
-    }
+
 
 
 
@@ -129,7 +129,7 @@ public class TouristController {
         Optional<TouristAttraction> attraction = touristService.findAttractionByName(name);
         if (attraction.isPresent()) {
             model.addAttribute("attraction", attraction.get());
-            return "UpdateAttraction"; // Navnet på din Thymeleaf-skabelon for opdatering
+            return "UpdateAttraction"; // Navnet på Thymeleaf-skabelon for opdatering
         } else {
             return "redirect:/attractions";
         }
