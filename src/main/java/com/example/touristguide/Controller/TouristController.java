@@ -142,20 +142,18 @@ public class TouristController {
 
 
 //Endpoint til vores tags
+    @GetMapping("/{name}/tags")
     public String getAttractionTags(@PathVariable String name, Model model) {
         Optional<TouristAttraction> attraction = touristService.findAttractionByName(name);
         if (attraction.isPresent()) {
             model.addAttribute("attraction", attraction.get());
             // Antager at du har en liste af tags i din TouristAttraction model
             model.addAttribute("tags", attraction.get().getTags());
-            return "tags"; //(tags.html)
+            return "tags"; // tags.html
         } else {
-
             return "redirect:/attractions";
         }
     }
-
-
 
 
 }

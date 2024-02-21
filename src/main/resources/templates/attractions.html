@@ -20,12 +20,18 @@
         <td th:text="${attraktion.description}">Beskrivelse</td>
         <td th:text="${attraktion.city}">By</td>
         <td>
-            <a th:href="@{'/attractions/' + ${attraktion.name} + '/edit'}">Opdater</a>
-            <span th:each="tag : ${attraktion.tags}" th:text="${tag}">Tag</span>
+
+            <a th:href="@{/attractions/{name}/tags(name=${attraktion.name})}" class="button-style">Tag</a>
+            <a th:href="@{'/attractions/' + ${attraktion.name} + '/edit'}" class="button-style">Opdater</a>
+           <!-- DEN HER VISER TAGS
+            <span th:each="tag : ${attraktion.tags}" th:text="${tag}">Tag</span> -->
+
             <form th:action="@{'/attractions/delete/' + ${attraktion.name}}" method="post">
                 <input type="submit" value="Slet" />
             </form>
+
         </td>
+
     </tr>
 </table>
 
