@@ -4,12 +4,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TouristAttraction {
-
+    private int id;
     private String name;
     private String description;
-    private String city; //måske List<String>
+    private String city; //måske List<String>  ----> SKAL evt ændres for bedre funktionalitet.
     private List<String> tags;
 
+    public TouristAttraction(int id,String name, String description, String city, List<String> tags) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        this.city = city;
+        this.tags = tags;
+    }
     public TouristAttraction(String name, String description, String city, List<String> tags) {
         this.name = name;
         this.description = description;
@@ -17,11 +24,17 @@ public class TouristAttraction {
         this.tags = tags;
     }
 
-
     public TouristAttraction() {
         this.tags = new ArrayList<>();
     }
 
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
 
     public List<String> getTags() {
         return tags;

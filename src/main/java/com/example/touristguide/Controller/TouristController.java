@@ -53,7 +53,7 @@ public class TouristController {
     @GetMapping("/add")
     public String showAddForm(Model model) {
         model.addAttribute("touristAttraction", new TouristAttraction());
-        return "AddAttractions"; // Navnet på din Thymeleaf-skabelon for tilføjelse af en ny attraktion
+        return "AddAttractions";
     }
 
     //opgave 7
@@ -147,7 +147,6 @@ public class TouristController {
         Optional<TouristAttraction> attraction = touristService.findAttractionByName(name);
         if (attraction.isPresent()) {
             model.addAttribute("attraction", attraction.get());
-            // Antager at du har en liste af tags i din TouristAttraction model
             model.addAttribute("tags", attraction.get().getTags());
             return "tags"; // tags.html
         } else {

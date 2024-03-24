@@ -1,62 +1,119 @@
 package com.example.touristguide.Repository;
 
 import com.example.touristguide.Model.TouristAttraction;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 @Repository
 public class TouristRepository {
-    private List<TouristAttraction> touristAttractions;
+    @Value("${mysql.url}")
+    private String url;
 
-   /* public TouristRepository(){
-        this.touristAttractions = new ArrayList<>();
-        touristAttractions.add(new TouristAttraction("The Little Mermaid", "The little mermaid attraction."));
-        touristAttractions.add(new TouristAttraction("Møns Klint", "A beautiful view from the Danish coast."));
-        touristAttractions.add(new TouristAttraction("Tivoli", "A historic attraction for kids and adults."));
-    }*/
+    @Value("${mysql.username}")
+    private String username;
 
-    public TouristRepository(){
-        this.touristAttractions = new ArrayList<>(Arrays.asList(
+    @Value("${mysql.password}")
+    private String password;
 
-                new TouristAttraction("SMK", "Statens Museum for Kunst", "København", Arrays.asList("Kunst", "Museum")),
-                new TouristAttraction("Odense Zoo", "Europas bedste zoo", "Odense", Arrays.asList("Børnevenlig")),
-                new TouristAttraction("Dyrehaven", "Naturpark med skovområder", "Kongens Lyngby", Arrays.asList("Natur", "Gratis")),
-                new TouristAttraction("Tivoli", "Forlystelsespark midt i København centrum", "København", Arrays.asList("Børnevenlig"))
-        )); //Arrays.asList = foruddefineret værdier. Rettet så man kan tilføje flere.
+    private Connection connect() throws SQLException {
+        return DriverManager.getConnection(url, username, password);
     }
 
+    public List<TouristAttraction> findAllAttractions() {
+        List<TouristAttraction> attractions = new ArrayList<>();
+        String sql = "SELECT a.id, a.name, a.description, a.city, GROUP_CONCAT(t.tag SEPARATOR ', ') AS tags "
+                + "FROM attractions a "
+                + "LEFT JOIN attraction_tags at ON a.id = at.attraction_id "
+                + "LEFT JOIN tags t ON at.tag_id = t.id "
+                + "GROUP BY a.id";
 
-    //CRUD metoder
-    public List<TouristAttraction> findAllAttractions(){
-        return touristAttractions;
+        try (Connection conn = connect();
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+
+            while (rs.next()) {
+                List<String> tags = Arrays.asList(rs.getString("tags").split(", "));
+                attractions.add(new TouristAttraction(
+                        rs.getString("name"),
+                        rs.getString("description"),
+                        rs.getString("city"),
+                        tags
+                ));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return attractions;
     }
 
+    public TouristAttraction save(TouristAttraction touristAttraction) {
+        String sql = "INSERT INTO attractions (name, description, city) VALUES (?, ?, ?)";
 
-    public TouristAttraction save(TouristAttraction touristAttraction){
-        touristAttractions.add(touristAttraction);
-        return touristAttraction;
+        try (Connection conn = connect();
+             PreparedStatement pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+
+            pstmt.setString(1, touristAttraction.getName());
+            pstmt.setString(2, touristAttraction.getDescription());
+            pstmt.setString(3, touristAttraction.getCity());
+
+
+            int affectedRows = pstmt.executeUpdate();
+
+            if (affectedRows > 0) {
+                try (ResultSet rs = pstmt.getGeneratedKeys()) {
+                    if (rs.next()) {
+                        touristAttraction.setId(rs.getInt(1));
+                    }
+                }
+            }
+
+            return touristAttraction;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     public void delete(String name) {
-        touristAttractions.removeIf(attraction -> attraction.getName().equalsIgnoreCase(name));
+        String sql = "DELETE FROM attractions WHERE name = ?";
+
+        try (Connection conn = connect();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setString(1, name);
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     public TouristAttraction update(String name, TouristAttraction updatedAttraction) {
-        for (int i = 0; i < touristAttractions.size(); i++) {
-            TouristAttraction existingAttraction = touristAttractions.get(i);
-            System.out.println(existingAttraction.getName());
-            System.out.println((existingAttraction.getDescription()));
+        String sql = "UPDATE attractions SET description = ?, city = ? WHERE name = ?";
 
-            if (existingAttraction.getName().equalsIgnoreCase(name)) {
-                touristAttractions.set(i, updatedAttraction);
+        try (Connection conn = connect();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setString(1, updatedAttraction.getDescription());
+            pstmt.setString(2, updatedAttraction.getCity());
+            pstmt.setString(3, name);
+            // Jeg kan opdatere tags hvis nødvendigt
+
+            int affectedRows = pstmt.executeUpdate();
+
+            if (affectedRows > 0) {
                 return updatedAttraction;
+            } else {
+                return null;
             }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
         }
-        System.out.println(updatedAttraction.getName());
-        return null;
-        // return throw new NoSuchElementException("TouristAttraction with name " + name + " not found");
     }
 }
